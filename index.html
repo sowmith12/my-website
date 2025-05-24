@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>3D Interactive Skills Cube with Unlimited Zoom</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+  /* Base resets */
+  * {
+    box-sizing: border-box;
+  }
+  body, html {
+    margin: 0; 
+    padding: 0; 
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #1b2735, #090a0f);
+    color: #eee;
+    font-family: 'Montserrat', sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #scene {
+    width: 100vw;
+    height: 100vh;
+    perspective: 1500px;
+    perspective-origin: 50% 50%;
+    cursor: grab;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #cube {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+  }
+
+  .face {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #222, #111);
+    border-radius: 20px;
+    box-shadow:
+      inset 0 0 20px #000,
+      0 10px 20px rgba(0,0,0,0.7);
+    color: #00ffe2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-align: center;
+    user-select: none;
+  }
+
+  .face .icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    text-shadow: 0 0 10px #00ffe2;
+  }
+  .face .skill {
+    font-weight: 700;
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .face .desc {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: #33fffdbb;
+  }
+
+  /* Position faces */
+  #front  { transform: translateZ(100px); }
+  #back   { transform: rotateY(180deg) translateZ(100px); }
+  #right  { transform: rotateY(90deg) translateZ(100px); }
+  #left   { transform: rotateY(-90deg) translateZ(100px); }
+  #top    { transform: rotateX(90deg) translateZ(100px); }
+  #bottom { transform: rotateX(-90deg) translateZ(100px); }
+
+  /* Instructions */
+  #instructions {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #00ffe2cc;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    user-select: none;
+    text-shadow: 0 0 3px rgba(0, 255, 226, 0.8);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 226, 0.2);
+  }
+
+  /* Zoom indicator */
+  #zoom-indicator {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    color: #00ffe2cc;
+    font-weight: 600;
+    font-size: 0.9rem;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 15px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 226, 0.2);
+  }
+
+</style>
+</head>
+<body>
+  <div id="scene" aria-label="3D interactive skills cube" tabindex="0">
+    <div id="cube" role="list" aria-roledescription="3D cube with skill faces" aria-live="polite">
+      <div class="face" id="front" role="listitem" tabindex="0" aria-label="JavaScript skill">
+        <div class="icon" aria-hidden="true">🟨</div>
+        <div class="skill">JavaScript</div>
+        <div class="desc">ES6+, Async, DOM, Modules</div>
+      </div>
+      <div class="face" id="back" role="listitem" tabindex="0" aria-label="CSS & Design skill">
+        <div class="icon" aria-hidden="true">🎨</div>
+        <div class="skill">CSS &amp; Design</div>
+        <div class="desc">3D Transforms &amp; Animations</div>
+      </div>
+      <div class="face" id="right" role="listitem" tabindex="0" aria-label="React skill">
+        <div class="icon" aria-hidden="true">⚛️</div>
+        <div class="skill">React.js</div>
+        <div class="desc">Component Driven UI</div>
+      </div>
+      <div class="face" id="left" role="listitem" tabindex="0" aria-label="Node.js Projects skill">
+        <div class="icon" aria-hidden="true">📦</div>
+        <div class="skill">Node.js Projects</div>
+        <div class="desc">APIs &amp; Automation</div>
+      </div>
+      <div class="face" id="top" role="listitem" tabindex="0" aria-label="Performance skill">
+        <div class="icon" aria-hidden="true">⚡</div>
+        <div class="skill">Performance</div>
+        <div class="desc">Optimized &amp; Fast Apps</div>
+      </div>
+      <div class="face" id="bottom" role="listitem" tabindex="0" aria-label="Git & Versioning skill">
+        <div class="icon" aria-hidden="true">🧑‍💻</div>
+        <div class="skill">Git &amp; Versioning</div>
+        <div class="desc">Collaboration &amp; Source Control</div>
+      </div>
+    </div>
+  </div>
+  
+  <div id="instructions">
+    Click and drag to rotate the cube in 360°<br>
+    Scroll wheel to zoom in/out (unlimited)<br>
+    Use arrow keys to rotate
+  </div>
+  
+  <div id="zoom-indicator">Zoom: 100%</div>
+
+<script>
+(() => {
+  const cube = document.getElementById('cube');
+  const scene = document.getElementById('scene');
+  const zoomIndicator = document.getElementById('zoom-indicator');
+
+  let rotationX = -20;
+  let rotationY = 0;
+  let zoom = -1200;
+
+  let isDragging = false;
+  let dragStart = { x: 0, y: 0 };
+  let dragStartRotation = { x: 0, y: 0 };
+
+  function updateTransform() {
+    cube.style.transform = `translateZ(${zoom}px) rotateX(${rotationX}deg) rotateY(${rotationY}deg)`;
+    
+    // Update zoom indicator
+    const zoomPercent = Math.round(100 + (zoom / 10));
+    zoomIndicator.textContent = `Zoom: ${zoomPercent}%`;
+  }
+
+  scene.style.cursor = 'grab';
+
+  // Mouse drag controls
+  scene.addEventListener('mousedown', e => {
+    isDragging = true;
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+    dragStartRotation.x = rotationX;
+    dragStartRotation.y = rotationY;
+    scene.style.cursor = 'grabbing';
+    e.preventDefault();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    scene.style.cursor = 'grab';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    const dx = e.clientX - dragStart.x;
+    const dy = e.clientY - dragStart.y;
+    rotationY = dragStartRotation.y + dx * 0.5;
+    let newRotationX = dragStartRotation.x - dy * 0.5;
+    rotationX = Math.min(90, Math.max(-90, newRotationX));
+    updateTransform();
+  });
+
+  // Unlimited zoom with mouse wheel
+  scene.addEventListener('wheel', e => {
+    e.preventDefault();
+    zoom += e.deltaY * -2;
+    updateTransform();
+  }, { passive: false });
+
+  // Touch controls for mobile
+  let touchStart = { x: 0, y: 0 };
+  let touchStartRotation = { x: 0, y: 0 };
+  let touchDistance = 0;
+  let touchStartZoom = 0;
+
+  scene.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      // Single touch - rotation
+      touchStart.x = e.touches[0].clientX;
+      touchStart.y = e.touches[0].clientY;
+      touchStartRotation.x = rotationX;
+      touchStartRotation.y = rotationY;
+    } else if (e.touches.length === 2) {
+      // Two finger pinch - zoom
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchDistance = Math.sqrt(dx * dx + dy * dy);
+      touchStartZoom = zoom;
+    }
+    e.preventDefault();
+  });
+
+  scene.addEventListener('touchmove', e => {
+    if (e.touches.length === 1) {
+      // Single touch - rotation
+      const dx = e.touches[0].clientX - touchStart.x;
+      const dy = e.touches[0].clientY - touchStart.y;
+      rotationY = touchStartRotation.y + dx * 0.5;
+      let newRotationX = touchStartRotation.x - dy * 0.5;
+      rotationX = Math.min(90, Math.max(-90, newRotationX));
+      updateTransform();
+    } else if (e.touches.length === 2) {
+      // Two finger pinch - zoom
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const deltaDistance = distance - touchDistance;
+      zoom = touchStartZoom + deltaDistance * 2;
+      updateTransform();
+    }
+    e.preventDefault();
+  });
+
+  // Keyboard controls
+  scene.addEventListener('keydown', e => {
+    const step = 10;
+    switch(e.key) {
+      case 'ArrowUp':
+        rotationX = Math.min(90, rotationX - step);
+        updateTransform();
+        break;
+      case 'ArrowDown':
+        rotationX = Math.max(-90, rotationX + step);
+        updateTransform();
+        break;
+      case 'ArrowLeft':
+        rotationY -= step;
+        updateTransform();
+        break;
+      case 'ArrowRight':
+        rotationY += step;
+        updateTransform();
+        break;
+      case '+':
+      case '=':
+        zoom += 50;
+        updateTransform();
+        break;
+      case '-':
+        zoom -= 50;
+        updateTransform();
+        break;
+    }
+  });
+
+  // Auto-focus scene for keyboard controls
+  scene.focus();
+
+  // Initialize
+  updateTransform();
+})();
+</script>
+</body>
+</html>
