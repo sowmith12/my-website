@@ -672,7 +672,60 @@
             text-align: center;
             transition: all 0.3s ease;
         }
+.card-content {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
 
+.text-section {
+    flex: 2;
+}
+
+.image-section {
+    flex: 1;
+}
+
+.image-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #ff6b35;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+.incubation-logo {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 8px;
+}
+
+.stat-icon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.incubation-stat h3 {
+    color: #ff6b35;
+    margin: 10px 0;
+    font-size: 1.2em;
+}
+
+.incubation-stat p {
+    color: #cccccc;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .card-content {
+        flex-direction: column;
+    }
+    
+    .text-section, .image-section {
+        flex: 1;
+    }
+}
         .incubation-card:hover {
             transform: translate(-5px, -5px);
             box-shadow: 5px 5px 0px var(--primary-orange);
