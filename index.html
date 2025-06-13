@@ -666,10 +666,11 @@
         }
 .image-section {
     width: 100%;
-    height: 100%;
+    height: 300px; /* Adjust height to match the content box size */
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden; /* Prevents overflow if the image is larger */
   }
 
   .image-box {
@@ -680,7 +681,7 @@
   .incubation-logo {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ensures the image fills the container while maintaining aspect ratio */
+    object-fit: cover; /* Scales the image to fill the container while maintaining aspect ratio */
     object-position: center; /* Centers the image within the container */
   }
         .incubation-card {
@@ -1207,7 +1208,7 @@ Currently.
           </div>
           <div class="image-section">
             <div class="image-box">
-              <img src="https://swarmatron.cs.umn.edu/images/swarmies.jpg?text=DEfINED" alt="DEfINED Logo" class="incubation-logo">
+              <img src="https://swarmathon.cs.unm.edu/images/swarmies.jpg?text=DEfINED" alt="DEfINED Logo" class="incubation-logo">
             </div>
           </div>
         </div>
